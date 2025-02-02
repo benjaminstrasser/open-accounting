@@ -1,23 +1,23 @@
 <script lang="ts">
-	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import { cn } from '$lib/utils.js';
-	import type { WithElementRef } from 'bits-ui';
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { SIDEBAR_WIDTH_MOBILE } from './constants.js';
-	import { useSidebar } from './context.svelte.js';
+	import * as Sheet from "$lib/components/ui/sheet/index.js";
+	import { cn } from "$lib/utils.js";
+	import type { WithElementRef } from "bits-ui";
+	import type { HTMLAttributes } from "svelte/elements";
+	import { SIDEBAR_WIDTH_MOBILE } from "./constants.js";
+	import { useSidebar } from "./context.svelte.js";
 
 	let {
 		ref = $bindable(null),
-		side = 'left',
-		variant = 'sidebar',
-		collapsible = 'offcanvas',
+		side = "left",
+		variant = "sidebar",
+		collapsible = "offcanvas",
 		class: className,
 		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		side?: 'left' | 'right';
-		variant?: 'sidebar' | 'floating' | 'inset';
-		collapsible?: 'offcanvas' | 'icon' | 'none';
+		side?: "left" | "right";
+		variant?: "sidebar" | "floating" | "inset";
+		collapsible?: "offcanvas" | "icon" | "none";
 	} = $props();
 
 	const sidebar = useSidebar();
