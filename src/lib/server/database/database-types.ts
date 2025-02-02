@@ -3,4 +3,41 @@
  * Please do not edit it manually.
  */
 
-export interface DB {}
+import type { ColumnType } from 'kysely';
+
+export type DebitCredit = 'credit' | 'debit';
+
+export type Generated<T> =
+	T extends ColumnType<infer S, infer I, infer U>
+		? ColumnType<S, I | undefined, U>
+		: ColumnType<T, T | undefined, T>;
+
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
+
+export interface Account {
+	account_number: string;
+	id: Generated<number>;
+	name: string;
+	normal_balance: DebitCredit;
+	type: string;
+}
+
+export interface JournalEntry {
+	date: Generated<Timestamp>;
+	description: string;
+	id: Generated<number>;
+}
+
+export interface LedgerEntry {
+	account_id: number;
+	amount: number;
+	id: Generated<number>;
+	journal_entry_id: number;
+	side: DebitCredit;
+}
+
+export interface DB {
+	account: Account;
+	journal_entry: JournalEntry;
+	ledger_entry: LedgerEntry;
+}
