@@ -1,25 +1,25 @@
 <script lang="ts">
-	import Book from "lucide-svelte/icons/book";
-	import House from "lucide-svelte/icons/house";
-	import NotebookPen from "lucide-svelte/icons/notebook-pen";
-	import * as Sidebar from "$lib/components/ui/sidebar";
+	import Book from 'lucide-svelte/icons/book';
+	import House from 'lucide-svelte/icons/house';
+	import NotebookPen from 'lucide-svelte/icons/notebook-pen';
+	import * as Sidebar from '$lib/components/ui/sidebar';
 
 	// Menu items.
 	const items = [
 		{
-			title: "Home",
-			url: "/",
-			icon: House,
+			title: 'Home',
+			url: '/',
+			icon: House
 		},
 		{
-			title: "Journal",
-			url: "/journal",
+			title: 'Journal',
+			url: '/journal',
 			icon: NotebookPen
 		},
 		{
-			title: "Accounts",
-			url: "/account",
-			icon: Book,
+			title: 'Accounts',
+			url: '/account',
+			icon: Book
 		}
 	];
 </script>

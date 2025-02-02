@@ -1,14 +1,14 @@
 <script lang="ts">
-	import "../app.css"
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import AppSidebar from "$lib/components/app-sidebar.svelte";
+	import '../app.css';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import AppSidebar from '$lib/components/app-sidebar.svelte';
 
 	let { children } = $props();
 </script>
 
 <Sidebar.Provider>
 	<AppSidebar />
-	<main class="w-full h-100 overflow-y-auto">
+	<main class="h-100 w-full overflow-y-auto">
 		<Sidebar.Trigger />
 		{@render children?.()}
 	</main>
