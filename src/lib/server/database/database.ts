@@ -1,5 +1,5 @@
 import type { DB } from './database-types';
-import { Pool } from 'pg';
+import pg from 'pg';
 import { Kysely, PostgresDialect } from 'kysely';
 import {
 	DATABASE_DB,
@@ -10,7 +10,7 @@ import {
 } from '$env/static/private';
 
 const dialect = new PostgresDialect({
-	pool: new Pool({
+	pool: new pg.Pool({
 		database: DATABASE_DB,
 		host: DATABASE_HOST,
 		user: DATABASE_USER,
