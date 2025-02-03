@@ -8,28 +8,21 @@
 	import * as Select from '$lib/components/ui/select';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
-	import CalendarIcon from "lucide-svelte/icons/calendar";
-	import { cn } from "$lib/utils";
-	import { buttonVariants } from "$lib/components/ui/button";
-	import * as Popover from "$lib/components/ui/popover";
-	import { Calendar } from "$lib/components/ui/calendar";
-	import {
-		DateFormatter,
-		type DateValue,
-		getLocalTimeZone,
-		today
-	} from "@internationalized/date";
+	import CalendarIcon from 'lucide-svelte/icons/calendar';
+	import { cn } from '$lib/utils';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import * as Popover from '$lib/components/ui/popover';
+	import { Calendar } from '$lib/components/ui/calendar';
+	import { DateFormatter, type DateValue, getLocalTimeZone, today } from '@internationalized/date';
 
-	const df = new DateFormatter("de-AT", { dateStyle: "long" });
+	const df = new DateFormatter('de-AT', { dateStyle: 'long' });
 	let value = today(getLocalTimeZone());
 
 	$: if (value) {
 		$formData.journal.date = value.toDate(getLocalTimeZone());
 	}
 
-	const items = [
-		{ value: 0, label: "Today" },
-	];
+	const items = [{ value: 0, label: 'Today' }];
 
 	export let data;
 
@@ -50,11 +43,11 @@
 
 	// Calculate totals for each side
 	$: debitTotal = $formData.ledgerEntries
-		.filter(e => e.side === 'debit')
+		.filter((e) => e.side === 'debit')
 		.reduce((sum, e) => sum + (e.amount || 0), 0);
 
 	$: creditTotal = $formData.ledgerEntries
-		.filter(e => e.side === 'credit')
+		.filter((e) => e.side === 'credit')
 		.reduce((sum, e) => sum + (e.amount || 0), 0);
 
 	$: isBalanced = Math.abs(debitTotal - creditTotal) < 0.01;
@@ -75,13 +68,13 @@
 	}
 </script>
 
-<div class="container mx-auto p-6 space-y-2">
-	<div class="flex justify-between items-center">
+<div class="container mx-auto space-y-2 p-6">
+	<div class="flex items-center justify-between">
 		<h1 class="text-3xl font-bold">Create Journal Entry</h1>
 		<Button variant="outline" onclick={() => goto('/journal')}>Back to Journals</Button>
 	</div>
 
-	<form method="POST" use:enhance class="space-y-6 border p-6 rounded-lg shadow-md bg-white">
+	<form method="POST" use:enhance class="space-y-6 rounded-lg border bg-white p-6 shadow-md">
 		<!-- Journal Information -->
 		<div class="grid grid-cols-2 gap-4">
 			<Form.Field {form} name="journal.date">
@@ -90,27 +83,29 @@
 					<Popover.Root>
 						<Popover.Trigger
 							class={cn(
-                buttonVariants({
-                  variant: "outline",
-                  class: "w-full justify-start text-left font-normal"
-                }),
-                !value && "text-muted-foreground"
-              )}
+								buttonVariants({
+									variant: 'outline',
+									class: 'w-full justify-start text-left font-normal'
+								}),
+								!value && 'text-muted-foreground'
+							)}
 						>
 							<CalendarIcon />
-							{value ? df.format(value.toDate(getLocalTimeZone())) : "Pick a date"}
+							{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
 						</Popover.Trigger>
 						<Popover.Content class="flex w-auto flex-col space-y-2 p-2">
 							<Select.Root
 								type="single"
-								bind:value={() => value ? df.format(value.toDate(getLocalTimeZone())) : "",
-                (v) => {
-                  if (!v) return;
-                  value = today(getLocalTimeZone()).add({ days: Number.parseInt(v) });
-                }}
+								bind:value={
+									() => (value ? df.format(value.toDate(getLocalTimeZone())) : ''),
+									(v) => {
+										if (!v) return;
+										value = today(getLocalTimeZone()).add({ days: Number.parseInt(v) });
+									}
+								}
 							>
 								<Select.Trigger>
-									{value ? df.format(value.toDate(getLocalTimeZone())) : "Pick a date"}
+									{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
 								</Select.Trigger>
 								<Select.Content>
 									{#each items as item}
@@ -137,17 +132,18 @@
 		</div>
 
 		<!-- Ledger Entries -->
-		<div class="grid grid-cols-2 gap-6 mt-6">
+		<div class="mt-6 grid grid-cols-2 gap-6">
 			<!-- Debit Column -->
-			<div class="border p-4 rounded-lg bg-gray-50">
-				<div class="flex justify-between items-center mb-4">
+			<div class="rounded-lg border bg-gray-50 p-4">
+				<div class="mb-4 flex items-center justify-between">
 					<h4 class="text-lg font-semibold text-green-700">Debit</h4>
 					<span class="text-sm font-medium">Total: {debitTotal.toFixed(2)} €</span>
 				</div>
 
-				{#each $formData.ledgerEntries.map((entry, index) => ({...entry, origIndex: index}))
-					.filter(e => e.side === 'debit') as entry}
-					<div class="flex gap-3 items-center mt-3">
+				{#each $formData.ledgerEntries
+					.map((entry, index) => ({ ...entry, origIndex: index }))
+					.filter((e) => e.side === 'debit') as entry}
+					<div class="mt-3 flex items-center gap-3">
 						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.account_id`} class="flex-1">
 							<Form.Control>
 								<Select.Root
@@ -155,7 +151,8 @@
 									bind:value={$formData.ledgerEntries[entry.origIndex].account_id}
 								>
 									<Select.Trigger class="w-full">
-										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name || 'Select Account'}
+										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name ||
+											'Select Account'}
 									</Select.Trigger>
 									<Select.Content>
 										{#each Object.values(data.accountsMap) as account}
@@ -192,7 +189,7 @@
 				<Button
 					type="button"
 					variant="outline"
-					class="w-full mt-4"
+					class="mt-4 w-full"
 					onclick={() => addLedgerEntry('debit')}
 				>
 					+ Add Debit Entry
@@ -200,15 +197,16 @@
 			</div>
 
 			<!-- Credit Column -->
-			<div class="border p-4 rounded-lg bg-gray-50">
-				<div class="flex justify-between items-center mb-4">
+			<div class="rounded-lg border bg-gray-50 p-4">
+				<div class="mb-4 flex items-center justify-between">
 					<h4 class="text-lg font-semibold text-red-700">Credit</h4>
 					<span class="text-sm font-medium">Total: {creditTotal.toFixed(2)} €</span>
 				</div>
 
-				{#each $formData.ledgerEntries.map((entry, index) => ({...entry, origIndex: index}))
-					.filter(e => e.side === 'credit') as entry}
-					<div class="flex gap-3 items-center mt-3">
+				{#each $formData.ledgerEntries
+					.map((entry, index) => ({ ...entry, origIndex: index }))
+					.filter((e) => e.side === 'credit') as entry}
+					<div class="mt-3 flex items-center gap-3">
 						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.account_id`} class="flex-1">
 							<Form.Control>
 								<Select.Root
@@ -216,7 +214,8 @@
 									bind:value={$formData.ledgerEntries[entry.origIndex].account_id}
 								>
 									<Select.Trigger class="w-full">
-										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name || 'Select Account'}
+										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name ||
+											'Select Account'}
 									</Select.Trigger>
 									<Select.Content>
 										{#each Object.values(data.accountsMap) as account}
@@ -253,7 +252,7 @@
 				<Button
 					type="button"
 					variant="outline"
-					class="w-full mt-4"
+					class="mt-4 w-full"
 					onclick={() => addLedgerEntry('credit')}
 				>
 					+ Add Credit Entry
@@ -262,7 +261,7 @@
 		</div>
 
 		<!-- Balance Status -->
-		<div class="text-center mt-4">
+		<div class="mt-4 text-center">
 			<p class={`${isBalanced ? 'text-green-600' : 'text-red-600'} font-semibold`}>
 				{isBalanced ? 'Entries Balanced' : 'Entries Not Balanced'}
 			</p>
@@ -272,12 +271,6 @@
 		</div>
 
 		<!-- Submit Button -->
-		<Button
-			type="submit"
-			class="w-full mt-6"
-			disabled={!isBalanced}
-		>
-			Submit Journal Entry
-		</Button>
+		<Button type="submit" class="mt-6 w-full" disabled={!isBalanced}>Submit Journal Entry</Button>
 	</form>
 </div>
