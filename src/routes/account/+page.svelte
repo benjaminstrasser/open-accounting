@@ -1,31 +1,17 @@
 <script lang="ts">
-	import {
-		Table,
-		TableBody,
-		TableCell,
-		TableHead,
-		TableHeader,
-		TableRow
-	} from '$lib/components/ui/table';
-	import * as Dialog from '$lib/components/ui/dialog';
+	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
 	import CirclePlus from 'lucide-svelte/icons/circle-plus';
-	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
 	import { toast } from 'svelte-sonner';
 	import { goto, invalidate } from '$app/navigation';
 	import type { PageProps } from './$types';
-	import * as Select from '$lib/components/ui/select';
-	import {
-		superForm
-	} from 'sveltekit-superforms';
+	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { CreateAccountSchema } from '$lib/models/account.model';
+	import { type AccountWithBalance, CreateAccountSchema } from '$lib/models/account.model';
 
 	const { data }: PageProps = $props();
 
 	let open = $state(false);
-
 	// Split accounts into debit and credit
 	const debitAccounts = data.accounts.filter((account) => account.normal_balance === 'debit');
 	const creditAccounts = data.accounts.filter((account) => account.normal_balance === 'credit');
@@ -46,7 +32,7 @@
 </script>
 
 <!-- Snippet for account table -->
-{#snippet accountTable(title, accounts)}
+{#snippet accountTable(title: string, accounts: AccountWithBalance[])}
 	<div class="flex-1">
 		<h2 class="mb-4 border-b-2 border-primary text-2xl font-semibold">{title}</h2>
 		<Table class="w-full shadow-md">
@@ -67,7 +53,19 @@
 						<TableCell>{account.account_number}</TableCell>
 						<TableCell>{account.name}</TableCell>
 						<TableCell class="capitalize">{account.type}</TableCell>
-						<TableCell class="font-bold">{account.balance}</TableCell>
+						{#if account.balance == 0}
+							<TableCell>
+								{account.balance} €
+							</TableCell>
+						{:else if (account.normal_balance === 'debit' && account.balance > 0) || (account.normal_balance === 'credit' && account.balance < 0)}
+							<TableCell class="text-green-600">
+								{account.balance} €
+							</TableCell>
+						{:else}
+							<TableCell class="text-red-600">
+								{account.balance} €
+							</TableCell>
+						{/if}
 					</TableRow>
 				{/each}
 			</TableBody>

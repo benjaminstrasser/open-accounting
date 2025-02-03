@@ -1,6 +1,7 @@
 import { db } from '../../database/database';
 import type { Account } from '../../database/database-types';
 import { type Insertable, type Selectable, sql, type Updateable } from 'kysely';
+import type { AccountWithBalance } from '$lib/models/account.model';
 
 export async function getAccountByNumber(accountNumber: string): Promise<Selectable<Account>> {
 	return db
@@ -48,9 +49,9 @@ export async function getAllAccounts(): Promise<Selectable<Account>[]> {
 	return db.selectFrom('account').selectAll().execute();
 }
 
-export async function getAllAccountsWithBalance() {
+export async function getAllAccountsWithBalance(): Promise<AccountWithBalance[]> {
 	return (
-		await sql<Selectable<Account> & { balance: string }>`
+		await sql<Selectable<Account> & { balance: number }>`
         SELECT a.id,
                a.account_number,
                a.name,
