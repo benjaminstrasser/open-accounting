@@ -44,8 +44,14 @@
 					<TableBody>
 						{#each journal.ledgerEntries as entry}
 							<TableRow class="hover:bg-gray-50">
-								<TableCell onclick={() => goto(`/account/${entry.account_id}}`)} class={entry.side === "credit" ? 'pl-8 text-sm cursor-pointer' : 'text-sm cursor-pointer'}>
-									{accountsMap[entry.account_id].account_number} | {accountsMap[entry.account_id].name}
+								<TableCell
+									onclick={() => goto(`/account/${entry.account_id}}`)}
+									class={entry.side === 'credit'
+										? 'cursor-pointer pl-8 text-sm'
+										: 'cursor-pointer text-sm'}
+								>
+									{accountsMap[entry.account_id].account_number} | {accountsMap[entry.account_id]
+										.name}
 								</TableCell>
 								<TableCell class="text-right text-sm font-medium text-green-600">
 									{entry.side === 'debit' ? `${entry.amount} €` : '-'}
