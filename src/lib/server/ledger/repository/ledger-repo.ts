@@ -114,7 +114,6 @@ export async function getAllJournalsWithLedgerEntries(): Promise<GetJournalEntry
 		.execute();
 
 	return transformResultToGetJournalEntry(values);
-
 }
 
 export async function getAllJournalEntriesForAccount(
@@ -206,5 +205,3 @@ function transformResultToGetJournalEntry(
 
 	return Array.from(journalEntriesMap.values());
 }
-
-

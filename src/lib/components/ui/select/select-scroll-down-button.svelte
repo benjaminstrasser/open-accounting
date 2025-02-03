@@ -12,7 +12,7 @@
 
 <SelectPrimitive.ScrollDownButton
 	bind:ref
-	class={cn("flex cursor-default items-center justify-center py-1", className)}
+	class={cn('flex cursor-default items-center justify-center py-1', className)}
 	{...restProps}
 >
 	<ChevronDown class="size-4" />

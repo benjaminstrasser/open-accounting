@@ -19,4 +19,4 @@
 	}: WithoutChild<FormPrimitive.FieldsetProps<T, U>> = $props();
 </script>
 
-<FormPrimitive.Fieldset bind:ref {form} {name} class={cn("space-y-2", className)} {...restProps} />
+<FormPrimitive.Fieldset bind:ref {form} {name} class={cn('space-y-2', className)} {...restProps} />

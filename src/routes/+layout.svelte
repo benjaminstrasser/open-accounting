@@ -4,7 +4,6 @@
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import { Toaster } from 'svelte-sonner';
 
-
 	let { children } = $props();
 </script>
 

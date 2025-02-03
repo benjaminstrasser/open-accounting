@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '$lib/components/ui/table';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
@@ -82,16 +89,15 @@
 		<h1 class="text-3xl font-bold">Accounts Overview</h1>
 		<Dialog.Root bind:open>
 			<Dialog.Trigger>
-				<div class="flex">Create Account
+				<div class="flex">
+					Create Account
 					<CirclePlus class="ml-2"></CirclePlus>
 				</div>
 			</Dialog.Trigger>
 			<Dialog.Content>
 				<Dialog.Header>
 					<Dialog.Title>Creat Account</Dialog.Title>
-					<Dialog.Description>
-						Create a debit or credit account
-					</Dialog.Description>
+					<Dialog.Description>Create a debit or credit account</Dialog.Description>
 					<form method="POST" use:enhance>
 						<Form.Field {form} name="account_number">
 							<Form.Control>
@@ -116,15 +122,9 @@
 							<Form.Control>
 								{#snippet children({ props })}
 									<Form.Label>Type</Form.Label>
-									<Select.Root
-										type="single"
-										bind:value={$formData.type}
-										name={props.name}
-									>
+									<Select.Root type="single" bind:value={$formData.type} name={props.name}>
 										<Select.Trigger>
-											{$formData.type
-												? $formData.type
-												: "Select a account type"}
+											{$formData.type ? $formData.type : 'Select a account type'}
 										</Select.Trigger>
 										<Select.Content>
 											<Select.Item value="asset">Aktivkonto (Asset)</Select.Item>
@@ -151,7 +151,7 @@
 										<Select.Trigger>
 											{$formData.normal_balance
 												? $formData.normal_balance
-												: "Select credit or debit"}
+												: 'Select credit or debit'}
 										</Select.Trigger>
 										<Select.Content>
 											<Select.Item value="debit">Debit</Select.Item>
