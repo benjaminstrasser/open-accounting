@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { DebitCredit } from '$lib/server/database/database-types';
 
 // Define the schema for a single ledger entry (excluding id and journal_entry_id)
 const LedgerEntrySchema = z.object({
@@ -48,3 +49,13 @@ export const GetJournalEntriesSchema = z.array(GetJournalEntrySchema);
 export type GetLedgerEntry = z.infer<typeof GetLedgerEntrySchema>;
 export type GetJournalEntry = z.infer<typeof GetJournalEntrySchema>;
 export type GetJournalEntries = z.infer<typeof GetJournalEntriesSchema>;
+
+export type GetLedgerWithJournalInformation = {
+	journal_id: number;
+	journal_description: string;
+	journal_date: Date;
+	ledger_id: number;
+	ledger_account_id: number;
+	ledger_amount: number;
+	ledger_side: DebitCredit;
+};

@@ -3,11 +3,12 @@
 	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
 	import { Separator } from '$lib/components/ui/separator';
 	import type { PageProps } from './$types';
+	import Time from 'svelte-time';
 
 	const { data }: PageProps = $props();
 
 	// Placeholder ledger entries (replace with real data later)
-	const ledgerEntries = [];
+	const ledgerEntries = data.ledgerEntries;
 </script>
 
 <div class="container mx-auto p-6 space-y-6">
@@ -57,12 +58,14 @@
 				<TableBody>
 					{#each ledgerEntries as entry}
 						<TableRow class="hover:bg-gray-50">
-							<TableCell>{entry.date}</TableCell>
-							<TableCell>{entry.description}</TableCell>
+							<TableCell>
+								<Time timestamp={entry.journal_date} format="DD.MM.YYYY" />
+							</TableCell>
+							<TableCell>{entry.journal_description}</TableCell>
 							<TableCell
-								class="text-green-600 font-medium">{entry.side === "debit" ? entry.amount + " €" : "-"}</TableCell>
+								class="text-green-600 font-medium">{entry.ledger_side === "debit" ? entry.ledger_amount + " €" : "-"}</TableCell>
 							<TableCell
-								class="text-red-600 font-medium">{entry.side === "credit" ? entry.amount + " €" : "-"}</TableCell>
+								class="text-red-600 font-medium">{entry.ledger_side === "credit" ? entry.ledger_amount + " €" : "-"}</TableCell>
 						</TableRow>
 					{/each}
 				</TableBody>
