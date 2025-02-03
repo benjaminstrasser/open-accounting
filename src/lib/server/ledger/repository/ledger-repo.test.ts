@@ -3,9 +3,11 @@ import { resetDatabase } from '../../utils/test/database-reset';
 import {
 	createJournalEntry,
 	getAllJournalsWithLedgerEntries,
+	getAllLedgerEntriesForAccount,
 	getJournalEntryWithLedgerById
 } from './ledger-repo';
 import { db } from '$lib/server/database/database';
+import { createAccount } from '$lib/server/account/repository/account-repo';
 
 describe('Ledger Repository - Journal & Ledger Entries', () => {
 	beforeEach(async () => {
@@ -204,5 +206,95 @@ describe('Ledger Repository - Journal & Ledger Entries', () => {
 			.selectAll()
 			.executeTakeFirst();
 		expect(fetchedJournal).toBeUndefined();
+	});
+
+	it('should return an empty array if no ledger entries exist for the account', async () => {
+		const account = await createAccount({
+			account_number: '1000',
+			name: 'Cash',
+			type: 'asset',
+			normal_balance: 'debit'
+		});
+
+		const result = await getAllLedgerEntriesForAccount(account.id);
+		expect(result).toEqual([]); // Should return an empty array
+	});
+
+	it('should retrieve multiple ledger entries for an account', async () => {
+		const account = await createAccount({
+			account_number: '1000',
+			name: 'Cash',
+			type: 'asset',
+			normal_balance: 'debit'
+		});
+
+		// Create two journal entries with transactions for the same account
+		const journal1 = await createJournalEntry({
+			journal: { description: 'First Transaction', date: new Date('2024-02-01') },
+			ledgerEntries: [
+				{ account_id: account.id, amount: 5000, side: 'debit' },
+				{ account_id: account.id, amount: 5000, side: 'credit' }
+			]
+		});
+
+		const journal2 = await createJournalEntry({
+			journal: { description: 'Second Transaction', date: new Date('2024-02-02') },
+			ledgerEntries: [
+				{ account_id: account.id, amount: 2000, side: 'debit' },
+				{ account_id: account.id, amount: 2000, side: 'credit' }
+			]
+		});
+
+		// Fetch ledger entries
+		const result = await getAllLedgerEntriesForAccount(account.id);
+
+		// Ensure correct structure
+		expect(result.length).toBe(2);
+		expect(result[0].id).toBe(journal1.id);
+		expect(result[0].ledgerEntries.length).toBe(2);
+		expect(result[1].id).toBe(journal2.id);
+		expect(result[1].ledgerEntries.length).toBe(2);
+	});
+
+	it('should correctly order transactions by journal date', async () => {
+		const account = await createAccount({
+			account_number: '1000',
+			name: 'Cash',
+			type: 'asset',
+			normal_balance: 'debit'
+		});
+
+		// Create journal entries out of order
+		await createJournalEntry({
+			journal: { description: 'Later Transaction', date: new Date('2024-02-05') },
+			ledgerEntries: [
+				{ account_id: account.id, amount: 1000, side: 'debit' },
+				{
+					account_id: account.id,
+					amount: 1000,
+					side: 'credit'
+				}
+			]
+		});
+
+		await createJournalEntry({
+			journal: { description: 'Earlier Transaction', date: new Date('2024-02-01') },
+			ledgerEntries: [
+				{ account_id: account.id, amount: 500, side: 'credit' },
+				{
+					account_id: account.id,
+					amount: 500,
+					side: 'debit'
+				}
+			]
+		});
+
+		// Fetch ledger entries
+		const result = await getAllLedgerEntriesForAccount(account.id);
+
+		// Ensure correct order (earliest first)
+		expect(result.length).toBe(2);
+		expect(result[0].description).toBe('Earlier Transaction');
+		expect(result[1].description).toBe('Later Transaction');
 	});
 });

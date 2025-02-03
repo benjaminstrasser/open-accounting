@@ -3,6 +3,8 @@ import { resetDatabase } from '../../utils/test/database-reset';
 import {
 	createAccount,
 	deleteAccount,
+	getAccountById,
+	getAccountByIdWithBalance,
 	getAccountByNumber,
 	getAllAccounts,
 	getAllAccountsWithBalance,
@@ -437,5 +439,133 @@ describe('Account Repository - Edge Cases', () => {
 		const accountsWithBalance = await getAllAccountsWithBalance();
 		const debitedAccount = accountsWithBalance.find((a) => a.id === debitAccount.id);
 		expect(debitedAccount?.balance).toBe('6000');
+	});
+
+	it('should retrieve an existing account by ID', async () => {
+		const account: Insertable<Account> = {
+			account_number: '1000',
+			name: 'Cash',
+			type: 'asset',
+			normal_balance: 'debit'
+		};
+
+		const createdAccount = await createAccount(account);
+		const retrievedAccount = await getAccountById(createdAccount.id);
+
+		expect(retrievedAccount).toBeDefined();
+		expect(retrievedAccount.id).toBe(createdAccount.id);
+		expect(retrievedAccount.account_number).toBe(account.account_number);
+	});
+
+	it('should throw an error when retrieving a non-existent account', async () => {
+		await expect(getAccountById(9999)).rejects.toThrowError();
+	});
+
+	it('should throw an error when retrieving an account after deletion', async () => {
+		const account: Insertable<Account> = {
+			account_number: '2000',
+			name: 'Bank',
+			type: 'asset',
+			normal_balance: 'debit'
+		};
+
+		const createdAccount = await createAccount(account);
+		await deleteAccount(createdAccount.id);
+
+		await expect(getAccountById(createdAccount.id)).rejects.toThrowError();
+	});
+
+	it('should retrieve an account with balance 0 if no ledger entries exist', async () => {
+		const account = await createAccount({
+			account_number: '1000',
+			name: 'Cash',
+			type: 'asset',
+			normal_balance: 'debit'
+		});
+
+		const result = await getAccountByIdWithBalance(account.id);
+		expect(result).toBeDefined();
+		expect(result?.balance).toBe('0');
+	});
+
+	it('should correctly calculate balance for a debit account', async () => {
+		const account = await createAccount({
+			account_number: '1000',
+			name: 'Cash',
+			type: 'asset',
+			normal_balance: 'debit'
+		});
+
+		const accountTest = await createAccount({
+			account_number: '4000',
+			name: 'Revenue',
+			type: 'test',
+			normal_balance: 'credit'
+		});
+
+		// Create a journal entry with a debit transaction
+		await createJournalEntry({
+			journal: { description: 'Test Debit Transaction', date: new Date() },
+			ledgerEntries: [
+				{ account_id: account.id, amount: 5000, side: 'debit' }, // Increase balance
+				{ account_id: accountTest.id, amount: 5000, side: 'credit' } // Decrease balance
+			]
+		});
+
+		// Create a journal entry with a debit transaction
+		await createJournalEntry({
+			journal: { description: 'Test Debit Transaction', date: new Date() },
+			ledgerEntries: [
+				{ account_id: account.id, amount: 2000, side: 'credit' }, // Increase balance
+				{ account_id: accountTest.id, amount: 2000, side: 'debit' } // Decrease balance
+			]
+		});
+
+		const result = await getAccountByIdWithBalance(account.id);
+		expect(result).toBeDefined();
+		expect(result?.balance).toBe('3000'); // 5000 - 2000 = 3000
+	});
+
+	it('should correctly calculate balance for a credit account', async () => {
+		const account = await createAccount({
+			account_number: '2000',
+			name: 'Accounts Payable',
+			type: 'liability',
+			normal_balance: 'credit'
+		});
+
+		const accountTest = await createAccount({
+			account_number: '3000',
+			name: 'Accounts Payable',
+			type: 'liability',
+			normal_balance: 'credit'
+		});
+
+		// Create a journal entry with a credit transaction
+		await createJournalEntry({
+			journal: { description: 'Test Credit Transaction', date: new Date() },
+			ledgerEntries: [
+				{ account_id: account.id, amount: 4000, side: 'credit' }, // Increase balance
+				{ account_id: accountTest.id, amount: 4000, side: 'debit' } // Decrease balance
+			]
+		});
+
+		// Create a journal entry with a credit transaction
+		await createJournalEntry({
+			journal: { description: 'Test Credit Transaction', date: new Date() },
+			ledgerEntries: [
+				{ account_id: account.id, amount: 1000, side: 'debit' }, // Increase balance
+				{ account_id: accountTest.id, amount: 1000, side: 'credit' } // Decrease balance
+			]
+		});
+
+		const result = await getAccountByIdWithBalance(account.id);
+		expect(result).toBeDefined();
+		expect(result?.balance).toBe('3000'); // 4000 - 1000 = 3000
+	});
+
+	it('should return null for a non-existent account', async () => {
+		const result = await getAccountByIdWithBalance(9999); // Non-existent ID
+		expect(result).toBeNull();
 	});
 });

@@ -10,6 +10,40 @@ export async function getAccountByNumber(accountNumber: string): Promise<Selecta
 		.executeTakeFirstOrThrow();
 }
 
+export async function getAccountById(accountId: number): Promise<Selectable<Account>> {
+	return db.selectFrom('account').where('id', '=', accountId).selectAll().executeTakeFirstOrThrow();
+}
+
+export async function getAccountByIdWithBalance(accountId: number) {
+	return (
+		(
+			await sql<Selectable<Account> & { balance: string }>`
+        SELECT a.id,
+               a.account_number,
+               a.name,
+               a.type,
+               a.normal_balance,
+               COALESCE(
+                       CASE
+                           WHEN a.normal_balance = 'debit' THEN
+                               SUM(CASE WHEN l.side = 'debit' THEN l.amount ELSE 0 END) -
+                               SUM(CASE WHEN l.side = 'credit' THEN l.amount ELSE 0 END)
+                           ELSE
+                               SUM(CASE WHEN l.side = 'credit' THEN l.amount ELSE 0 END) -
+                               SUM(CASE WHEN l.side = 'debit' THEN l.amount ELSE 0 END)
+                           END,
+                       0
+               ) AS balance
+        FROM account a
+                 LEFT JOIN ledger_entry l ON a.id = l.account_id
+        WHERE a.id = ${accountId}
+        GROUP BY a.id, a.account_number, a.name, a.type, a.normal_balance
+        LIMIT 1;
+		`.execute(db)
+		).rows[0] || null
+	);
+}
+
 export async function getAllAccounts(): Promise<Selectable<Account>[]> {
 	return db.selectFrom('account').selectAll().execute();
 }

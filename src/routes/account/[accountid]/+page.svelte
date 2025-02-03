@@ -1,0 +1,74 @@
+<script lang="ts">
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import { Separator } from '$lib/components/ui/separator';
+	import type { PageProps } from './$types';
+
+	const { data }: PageProps = $props();
+
+	// Placeholder ledger entries (replace with real data later)
+	const ledgerEntries = [];
+</script>
+
+<div class="container mx-auto p-6 space-y-6">
+	<!-- Account Overview Section -->
+	<Card class="shadow-lg border border-gray-200">
+		<CardHeader class="bg-gray-100 p-4">
+			<CardTitle class="text-2xl font-semibold text-gray-800">{data.account.name}</CardTitle>
+			<p class="text-gray-600 text-sm">Account Details</p>
+		</CardHeader>
+		<CardContent class="grid grid-cols-2 gap-6 p-6 text-gray-800">
+			<div>
+				<p class="text-sm text-gray-500">Account Number</p>
+				<p class="text-lg font-medium">{data.account.account_number}</p>
+			</div>
+			<div>
+				<p class="text-sm text-gray-500">Account Type</p>
+				<p class="text-lg font-medium capitalize">{data.account.type}</p>
+			</div>
+			<div>
+				<p class="text-sm text-gray-500">Normal Balance</p>
+				<p class="text-lg font-medium capitalize">{data.account.normal_balance}</p>
+			</div>
+			<div>
+				<p class="text-sm text-gray-500">Current Balance</p>
+				<p class="text-lg font-bold text-green-600">{data.account.balance} €</p>
+			</div>
+		</CardContent>
+	</Card>
+
+	<!-- Separator -->
+	<Separator class="my-4" />
+
+	<!-- Ledger Entries Section -->
+	<div>
+		<h2 class="text-xl font-semibold text-gray-800 mb-4">Ledger Entries</h2>
+
+		{#if ledgerEntries.length > 0}
+			<Table class="shadow-md border border-gray-200 w-full">
+				<TableHeader class="bg-gray-100">
+					<TableRow>
+						<TableHead>Date</TableHead>
+						<TableHead>Description</TableHead>
+						<TableHead class="text-left">Debit</TableHead>
+						<TableHead class="text-left">Credit</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{#each ledgerEntries as entry}
+						<TableRow class="hover:bg-gray-50">
+							<TableCell>{entry.date}</TableCell>
+							<TableCell>{entry.description}</TableCell>
+							<TableCell
+								class="text-green-600 font-medium">{entry.side === "debit" ? entry.amount + " €" : "-"}</TableCell>
+							<TableCell
+								class="text-red-600 font-medium">{entry.side === "credit" ? entry.amount + " €" : "-"}</TableCell>
+						</TableRow>
+					{/each}
+				</TableBody>
+			</Table>
+		{:else}
+			<p class="text-gray-500 text-center py-6">No ledger entries found.</p>
+		{/if}
+	</div>
+</div>

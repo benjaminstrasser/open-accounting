@@ -36,7 +36,7 @@
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^2.46.1",
-      "formsnap": "^2.0.0",
+		"formsnap": "^2.0.0",
 		"globals": "^15.14.0",
 		"kysely-codegen": "^0.17.0",
 		"prettier": "^3.4.2",
@@ -59,7 +59,7 @@
 		"lucide-svelte": "^0.474.0",
 		"pg": "^8.13.1",
 		"svelte-radix": "^2.0.1",
-      "svelte-sonner": "^0.3.28",
+		"svelte-sonner": "^0.3.28",
 		"zod": "^3.24.1"
 	}
 }

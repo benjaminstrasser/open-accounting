@@ -1,7 +1,7 @@
 import { db } from '../../database/database';
 import { type CreateJournalWithEntries, type GetJournalEntry } from '$lib/models/ledger.model';
 import type { Selectable } from 'kysely';
-import type { JournalEntry, LedgerEntry } from '$lib/server/database/database-types'; // Update with the correct relative path to your Zod types
+import type { DebitCredit, JournalEntry, LedgerEntry } from '$lib/server/database/database-types'; // Update with the correct relative path to your Zod types
 
 /**
  * Creates a journal entry with associated ledger entries.
@@ -109,6 +109,41 @@ export async function getAllJournalsWithLedgerEntries(): Promise<GetJournalEntry
 		])
 		.execute();
 
+	return transformResultToGetJournalEntry(values);
+
+}
+
+export async function getAllLedgerEntriesForAccount(accountId: number): Promise<GetJournalEntry[]> {
+	const values = await db
+		.selectFrom('ledger_entry as l')
+		.innerJoin('journal_entry as j', 'l.journal_entry_id', 'j.id')
+		.where('l.account_id', '=', accountId)
+		.select([
+			'l.id as ledger_id',
+			'l.journal_entry_id as journal_id',
+			'j.description as journal_description',
+			'j.date as journal_date',
+			'l.account_id as ledger_account_id',
+			'l.amount as ledger_amount',
+			'l.side as ledger_side'
+		])
+		.orderBy('j.date', 'asc') // Order by journal entry date
+		.execute();
+
+	return transformResultToGetJournalEntry(values);
+}
+
+function transformResultToGetJournalEntry(
+	values: {
+		journal_id: number;
+		journal_description: string;
+		journal_date: Date;
+		ledger_id: number;
+		ledger_account_id: number;
+		ledger_amount: number;
+		ledger_side: DebitCredit;
+	}[]
+) {
 	const journalEntriesMap = new Map<number, GetJournalEntry>();
 
 	values.forEach((v) => {
