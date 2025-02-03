@@ -12,3 +12,5 @@ export const CreateAccountSchema = z.object({
 export type CreateAccount = z.infer<typeof CreateAccountSchema>;
 
 export type AccountWithBalance = Selectable<Account> & { balance: number };
+
+export type AccountMap = {[idx: number]: Selectable<Account>}

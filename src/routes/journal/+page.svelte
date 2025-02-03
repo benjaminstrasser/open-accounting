@@ -12,9 +12,11 @@
 	import type { PageProps } from './$types';
 	import type { GetJournalEntry } from '$lib/models/ledger.model';
 	import Time from 'svelte-time';
+	import { goto } from '$app/navigation';
 
 	const { data }: PageProps = $props();
 	const journalEntries: GetJournalEntry[] = data.journalEntries;
+	const accountsMap = data.accountsMap;
 </script>
 
 <div class="container mx-auto space-y-4 p-6">
@@ -35,20 +37,15 @@
 					<TableHeader class="bg-gray-100">
 						<TableRow>
 							<TableHead class="w-1/4">Account</TableHead>
-							<TableHead class="w-1/6 text-center">Reference</TableHead>
 							<TableHead class="w-1/4 text-right">Debit (€)</TableHead>
 							<TableHead class="w-1/4 text-right">Credit (€)</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{#each journal.ledgerEntries as entry, index}
+						{#each journal.ledgerEntries as entry}
 							<TableRow class="hover:bg-gray-50">
-								<!-- Indent second entry -->
-								<TableCell class={index % 2 !== 0 ? 'pl-8 text-sm italic' : 'text-sm font-medium'}>
-									{entry.account_id}
-								</TableCell>
-								<TableCell class="text-center text-sm text-gray-600">
-									J{entry.journal_entry_id}
+								<TableCell onclick={() => goto(`/account/${entry.account_id}}`)} class={entry.side === "credit" ? 'pl-8 text-sm cursor-pointer' : 'text-sm cursor-pointer'}>
+									{accountsMap[entry.account_id].account_number} | {accountsMap[entry.account_id].name}
 								</TableCell>
 								<TableCell class="text-right text-sm font-medium text-green-600">
 									{entry.side === 'debit' ? `${entry.amount} €` : '-'}
