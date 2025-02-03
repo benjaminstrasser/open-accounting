@@ -110,7 +110,7 @@ export async function getAllJournalsWithLedgerEntries(): Promise<GetJournalEntry
 			'l.account_id as ledger_account_id',
 			'l.amount as ledger_amount',
 			'l.side as ledger_side'
-		])
+		]).orderBy("journal_date", 'desc')
 		.execute();
 
 	return transformResultToGetJournalEntry(values);
