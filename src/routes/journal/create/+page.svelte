@@ -13,7 +13,7 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Popover from '$lib/components/ui/popover';
 	import { Calendar } from '$lib/components/ui/calendar';
-	import { DateFormatter, type DateValue, getLocalTimeZone, today } from '@internationalized/date';
+	import { DateFormatter, getLocalTimeZone, today } from '@internationalized/date';
 
 	const df = new DateFormatter('de-AT', { dateStyle: 'long' });
 	let value = today(getLocalTimeZone());
