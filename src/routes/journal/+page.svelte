@@ -29,7 +29,7 @@
 			<CardHeader class="bg-gray-50 p-3">
 				<!-- Date formatted as "April 14" style -->
 				<p class="text-sm font-semibold italic text-gray-600">
-					<Time timestamp={journal.date} format="DD MMMM" />
+					<Time timestamp={journal.date} format="DD.MM.YYYY" />
 				</p>
 			</CardHeader>
 			<CardContent class="p-3">
