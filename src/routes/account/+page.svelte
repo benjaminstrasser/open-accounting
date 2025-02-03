@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as Form from '$lib/components/ui/form';
+	import * as Select from '$lib/components/ui/select';
 	import CirclePlus from 'lucide-svelte/icons/circle-plus';
 	import { Input } from '$lib/components/ui/input';
 	import { toast } from 'svelte-sonner';
