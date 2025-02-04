@@ -5,7 +5,7 @@ import type { DebitCredit } from '$lib/server/database/database-types';
 const LedgerEntrySchema = z.object({
 	account_id: z.number().int().positive(), // Must be a positive integer
 	amount: z.number().int(), // Represents the monetary value
-	side: z.enum(['debit', 'credit']) // Can be either 'debit' or 'credit'
+	side: z.enum(['debit', 'credit']).default(null as unknown as 'debit' | 'credit') // Can be either 'debit' or 'credit'
 });
 
 // Define the schema for the journal information

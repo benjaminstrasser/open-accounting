@@ -41,6 +41,22 @@
 		}
 	});
 	const { enhance, form: formData } = form;
+
+	// Array for account types
+	const accountTypes = [
+		{ value: 'asset', label: 'Aktivkonto (Asset)' },
+		{ value: 'liability', label: 'Passivkonto (Liability)' },
+		{ value: 'equity', label: 'Eigenkapital (Equity)' },
+		{ value: 'revenue', label: 'Ertragskonto (Revenue)' },
+		{ value: 'expense', label: 'Aufwandskonto (Expense)' },
+		{ value: 'private', label: 'Privatkonto (Private)' }
+	];
+
+	// Array for normal balances
+	const normalBalances = [
+		{ value: 'debit', label: 'Debit' },
+		{ value: 'credit', label: 'Credit' }
+	];
 </script>
 
 <!-- Snippet for account table -->
@@ -131,15 +147,18 @@
 								<Form.Label class="text-sm text-muted-foreground">Type</Form.Label>
 								<Select.Root type="single" bind:value={$formData.type} name={props.name}>
 									<Select.Trigger class="bg-card text-card-foreground border border-border">
-										{$formData.type ? $formData.type : 'Select an account type'}
+										{#if $formData.type}
+											{accountTypes.find(item => item.value === $formData.type)?.label}
+										{:else}
+											Select an account type
+										{/if}
 									</Select.Trigger>
 									<Select.Content class="bg-card text-card-foreground border border-border">
-										<Select.Item value="asset">Aktivkonto (Asset)</Select.Item>
-										<Select.Item value="liability">Passivkonto (Liability)</Select.Item>
-										<Select.Item value="equity">Eigenkapital (Equity)</Select.Item>
-										<Select.Item value="revenue">Ertragskonto (Revenue)</Select.Item>
-										<Select.Item value="expense">Aufwandskonto (Expense)</Select.Item>
-										<Select.Item value="private">Privatkonto (Private)</Select.Item>
+										{#each accountTypes as accountType}
+											<Select.Item value={accountType.value}>
+												{accountType.label}
+											</Select.Item>
+										{/each}
 									</Select.Content>
 								</Select.Root>
 							{/snippet}
@@ -150,19 +169,20 @@
 						<Form.Control>
 							{#snippet children({ props })}
 								<Form.Label class="text-sm text-muted-foreground">Normal Balance</Form.Label>
-								<Select.Root
-									type="single"
-									bind:value={$formData.normal_balance}
-									name={props.name}
-								>
+								<Select.Root type="single" bind:value={$formData.normal_balance} name={props.name}>
 									<Select.Trigger class="bg-card text-card-foreground border border-border">
-										{$formData.normal_balance
-											? $formData.normal_balance
-											: 'Select credit or debit'}
+										{#if $formData.normal_balance}
+											{normalBalances.find(item => item.value === $formData.normal_balance)?.label}
+										{:else}
+											Select credit or debit
+										{/if}
 									</Select.Trigger>
 									<Select.Content class="bg-card text-card-foreground border border-border">
-										<Select.Item value="debit">Debit</Select.Item>
-										<Select.Item value="credit">Credit</Select.Item>
+										{#each normalBalances as balance}
+											<Select.Item value={balance.value}>
+												{balance.label}
+											</Select.Item>
+										{/each}
 									</Select.Content>
 								</Select.Root>
 							{/snippet}
