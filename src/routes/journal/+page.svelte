@@ -23,22 +23,22 @@
 <div class="container mx-auto space-y-4 p-6">
 	<!-- Page Title -->
 	<div class="flex justify-between">
-		<h1 class="text-2xl font-bold text-primary">Journal Overview</h1>
+		<h1 class="text-2xl font-bold text-card-foreground">Journal Overview</h1>
 		<Button variant="default" href="/journal/create">Create Journal</Button>
 	</div>
 
 	<!-- Journal Entries List -->
 	{#each journalEntries as journal}
-		<Card class="border border-gray-200 shadow-sm">
-			<CardHeader class="bg-gray-50 p-3">
-				<!-- Date formatted as "April 14" style -->
-				<p class="text-sm font-semibold italic text-gray-600">
+		<Card class="border border-border shadow-sm bg-card text-card-foreground">
+			<CardHeader class="bg-muted p-3">
+				<!-- Date formatted as "DD.MM.YYYY" -->
+				<p class="text-sm font-semibold italic text-muted-foreground">
 					<Time timestamp={journal.date} format="DD.MM.YYYY" />
 				</p>
 			</CardHeader>
 			<CardContent class="p-3">
-				<Table class="w-full border border-gray-200">
-					<TableHeader class="bg-gray-100">
+				<Table class="w-full border border-border bg-card text-card-foreground">
+					<TableHeader class="bg-muted">
 						<TableRow>
 							<TableHead class="w-1/4">Account</TableHead>
 							<TableHead class="w-1/4 text-right">Debit (€)</TableHead>
@@ -47,15 +47,14 @@
 					</TableHeader>
 					<TableBody>
 						{#each journal.ledgerEntries as entry}
-							<TableRow class="hover:bg-gray-50">
+							<TableRow class="hover:bg-muted">
 								<TableCell
-									onclick={() => goto(`/account/${entry.account_id}}`)}
+									onclick={() => goto(`/account/${entry.account_id}`)}
 									class={entry.side === 'credit'
 										? 'cursor-pointer pl-8 text-sm'
 										: 'cursor-pointer text-sm'}
 								>
-									{accountsMap[entry.account_id].account_number} | {accountsMap[entry.account_id]
-										.name}
+									{accountsMap[entry.account_id].account_number} | {accountsMap[entry.account_id].name}
 								</TableCell>
 								<TableCell class="text-right text-sm font-medium text-green-600">
 									{entry.side === 'debit' ? `${entry.amount} €` : '-'}
@@ -69,7 +68,7 @@
 				</Table>
 
 				<!-- Description below transactions -->
-				<p class="mt-2 text-sm italic text-gray-600">{journal.description}</p>
+				<p class="mt-2 text-sm italic text-muted-foreground">{journal.description}</p>
 			</CardContent>
 		</Card>
 		<Separator class="my-3" />
