@@ -18,6 +18,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { type AccountWithBalance, CreateAccountSchema } from '$lib/models/account.model';
+	import { Button } from '$lib/components/ui/button';
 
 	const { data }: PageProps = $props();
 
@@ -86,13 +87,10 @@
 <div class="container mx-auto p-6">
 	<!-- Page Header -->
 	<div class="mb-6 flex items-center justify-between">
-		<h1 class="text-3xl font-bold">Accounts Overview</h1>
+		<h1 class="text-2xl font-bold text-primary">Accounts Overview</h1>
 		<Dialog.Root bind:open>
 			<Dialog.Trigger>
-				<div class="flex">
-					Create Account
-					<CirclePlus class="ml-2"></CirclePlus>
-				</div>
+				<Button variant="default">Create Account</Button>
 			</Dialog.Trigger>
 			<Dialog.Content>
 				<Dialog.Header>

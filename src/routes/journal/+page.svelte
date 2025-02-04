@@ -9,6 +9,7 @@
 		TableRow
 	} from '$lib/components/ui/table';
 	import { Separator } from '$lib/components/ui/separator';
+	import { Button } from "$lib/components/ui/button";
 	import type { PageProps } from './$types';
 	import type { GetJournalEntry } from '$lib/models/ledger.model';
 	import Time from 'svelte-time';
@@ -21,7 +22,10 @@
 
 <div class="container mx-auto space-y-4 p-6">
 	<!-- Page Title -->
-	<h1 class="text-2xl font-bold text-gray-800">Journal Overview</h1>
+	<div class="flex justify-between">
+		<h1 class="text-2xl font-bold text-primary">Journal Overview</h1>
+		<Button variant="default" href="/journal/create">Create Journal</Button>
+	</div>
 
 	<!-- Journal Entries List -->
 	{#each journalEntries as journal}

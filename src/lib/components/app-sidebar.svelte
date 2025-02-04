@@ -3,6 +3,7 @@
 	import House from 'lucide-svelte/icons/house';
 	import NotebookPen from 'lucide-svelte/icons/notebook-pen';
 	import * as Sidebar from '$lib/components/ui/sidebar';
+	import ModeDropdown from "./mode-dropdown.svelte"
 
 	// Menu items.
 	const items = [
@@ -46,4 +47,7 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 	</Sidebar.Content>
+	<Sidebar.Footer>
+		<ModeDropdown />
+	</Sidebar.Footer>
 </Sidebar.Root>
