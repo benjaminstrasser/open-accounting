@@ -2,6 +2,7 @@
 	import Book from 'lucide-svelte/icons/book';
 	import House from 'lucide-svelte/icons/house';
 	import NotebookPen from 'lucide-svelte/icons/notebook-pen';
+	import ReceiptText from 'lucide-svelte/icons/receipt-text';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import ModeDropdown from "./mode-dropdown.svelte"
 
@@ -21,6 +22,10 @@
 			title: 'Accounts',
 			url: '/account',
 			icon: Book
+		},{
+			title: 'Invoice',
+			url: '/invoice',
+			icon: ReceiptText
 		}
 	];
 </script>

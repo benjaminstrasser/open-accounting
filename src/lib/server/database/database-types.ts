@@ -3,41 +3,60 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType } from 'kysely';
+import type { ColumnType } from "kysely";
 
-export type DebitCredit = 'credit' | 'debit';
+export type DebitCredit = "credit" | "debit";
 
-export type Generated<T> =
-	T extends ColumnType<infer S, infer I, infer U>
-		? ColumnType<S, I | undefined, U>
-		: ColumnType<T, T | undefined, T>;
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Account {
-	account_number: string;
-	id: Generated<number>;
-	name: string;
-	normal_balance: DebitCredit;
-	type: string;
+  account_number: string;
+  id: Generated<number>;
+  name: string;
+  normal_balance: DebitCredit;
+  type: string;
+}
+
+export interface DraftInvoice {
+  file_data: Buffer;
+  filename: string;
+  id: Generated<number>;
+  uploaded_at: Generated<Timestamp>;
+}
+
+export interface Invoice {
+  amount: number;
+  created_at: Generated<Timestamp>;
+  file_data: Buffer;
+  filename: string;
+  id: Generated<number>;
+  invoice_date: Timestamp;
+  supplier: string;
+  vat: number;
 }
 
 export interface JournalEntry {
-	date: Generated<Timestamp>;
-	description: string;
-	id: Generated<number>;
+  date: Generated<Timestamp>;
+  description: string;
+  id: Generated<number>;
 }
 
 export interface LedgerEntry {
-	account_id: number;
-	amount: number;
-	id: Generated<number>;
-	journal_entry_id: number;
-	side: DebitCredit;
+  account_id: number;
+  amount: number;
+  id: Generated<number>;
+  journal_entry_id: number;
+  side: DebitCredit;
 }
 
 export interface DB {
-	account: Account;
-	journal_entry: JournalEntry;
-	ledger_entry: LedgerEntry;
+  account: Account;
+  draft_invoice: DraftInvoice;
+  invoice: Invoice;
+  journal_entry: JournalEntry;
+  ledger_entry: LedgerEntry;
 }
