@@ -5,12 +5,10 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { DraftInvoiceSchema } from '$lib/models/invoice.model';
 
-
-	// Initialize the form data with an empty array.
-	const initialData = { images: [] };
+	const {data} = $props()
 
 	// Set up Superforms with the schema and initial data.
-	const { form, enhance, errors } = superForm(initialData, {
+	const { form, enhance, errors } = superForm(data.form, {
 		validators: zodClient(DraftInvoiceSchema)
 	});
 
@@ -43,7 +41,7 @@
 			name="images"
 			accept=".pdf"
 			multiple
-			on:input={handleFileInput}
+			oninput={handleFileInput}
 			class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors"
 		/>
 		{#if $errors.images}
