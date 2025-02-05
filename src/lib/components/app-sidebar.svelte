@@ -24,7 +24,7 @@
 			icon: Book
 		},{
 			title: 'Invoice',
-			url: '/invoice',
+			url: '/draft-invoice',
 			icon: ReceiptText
 		}
 	];
