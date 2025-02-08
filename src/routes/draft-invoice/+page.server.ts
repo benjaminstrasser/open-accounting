@@ -1,13 +1,16 @@
 import type { Actions, PageServerLoad } from './$types';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { createDraftInvoice } from '$lib/server/invoice/repository/invoice-repo';
+import {
+	createDraftInvoice,
+	getAllDraftInvoices
+} from '$lib/server/invoice/repository/invoice-repo';
 import { DraftInvoiceSchema } from '$lib/models/invoice.model';
 
 
 export const load: PageServerLoad = async () => {
 	return {
-		form: await superValidate({ images: [] }, zod(DraftInvoiceSchema))
+		form: await superValidate(zod(DraftInvoiceSchema)),
 	};
 };
 

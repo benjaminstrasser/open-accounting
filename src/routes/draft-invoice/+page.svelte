@@ -1,51 +1,61 @@
 <script lang="ts">
-	import { tick } from 'svelte';
-	import { superForm } from 'sveltekit-superforms';
+	import { filesProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { Label } from '$lib/components/ui/label/index.js';
+	import { Table, TableHeader, TableRow, TableBody, TableCell, TableHead} from '$lib/components/ui/table';
 	import { DraftInvoiceSchema } from '$lib/models/invoice.model';
 
 	const {data} = $props()
 
-	// Set up Superforms with the schema and initial data.
-	const { form, enhance, errors } = superForm(data.form, {
+	const { form, enhance, errors, submit } = superForm(data.form, {
 		validators: zodClient(DraftInvoiceSchema)
-	});
+	})
 
-	let formEl: HTMLFormElement;
+	const files = filesProxy(form, 'images');
 
-	// This handler updates the form field with all selected files and auto-submits.
-	async function handleFileInput(e: Event) {
-		const input = e.currentTarget as HTMLInputElement;
-		// Update the form field "images" with an array of selected files.
-		$form.images = Array.from(input.files ?? []);
-		// Wait one tick to ensure the reactive update has propagated.
-		await tick();
-		// Automatically submit the form.
-		formEl.requestSubmit();
+	function submitFiles(e) {
+		console.log(e)
+		submit(e)
 	}
+
 </script>
 
-<form
-	method="POST"
-	enctype="multipart/form-data"
-	use:enhance
-	bind:this={formEl}
->
-	<div class="grid w-full max-w-sm items-center gap-1.5">
-		<Label for="draft-files">Upload Draft Invoices (PDF files)</Label>
-		<!-- Use a native input element with on:input handler as per official docs -->
+	<form method="POST" enctype="multipart/form-data" use:enhance>
 		<input
 			id="draft-files"
 			type="file"
 			name="images"
-			accept=".pdf"
 			multiple
-			oninput={handleFileInput}
-			class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors"
+			accept="application/pdf"
+			bind:files={$files}
+			onchange={submitFiles}
 		/>
-		{#if $errors.images}
-			<p class="text-red-500 text-sm">{$errors.images._errors}</p>
-		{/if}
-	</div>
-</form>
+		{#if $errors.images}<span>{$errors.images}</span>{/if}
+	</form>
+
+
+<hr class="my-8" />
+
+<!-- Draft Invoices List Table
+<h2 class="text-2xl font-bold mb-4">Draft Invoices</h2>
+{#if data.drafts && data.drafts.length > 0}
+	<Table class="w-full shadow-md bg-card text-card-foreground border border-border">
+		<TableHeader class="bg-muted">
+			<TableRow>
+				<TableHead>ID</TableHead>
+				<TableHead>Filename</TableHead>
+				<TableHead>Uploaded At</TableHead>
+			</TableRow>
+		</TableHeader>
+		<TableBody>
+			{#each data.drafts as draft}
+				<TableRow>
+					<TableCell>{draft.id}</TableCell>
+					<TableCell>{draft.filename}</TableCell>
+					<TableCell>{new Date(draft.uploaded_at).toLocaleString()}</TableCell>
+				</TableRow>
+			{/each}
+		</TableBody>
+	</Table>
+{:else}
+	<p>No draft invoices found.</p>
+{/if}-->
