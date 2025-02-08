@@ -3,16 +3,19 @@ import { Pool } from 'pg';
 import { promises as fs } from 'fs';
 import { FileMigrationProvider, Kysely, Migrator, PostgresDialect } from 'kysely';
 import type { DB } from '../src/lib/server/database/database-types';
+import { config } from 'dotenv';
+
+config();
 
 async function migrateToLatest() {
 	const db = new Kysely<DB>({
 		dialect: new PostgresDialect({
 			pool: new Pool({
-				host: 'localhost',
-				database: 'postgres',
-				user: 'user',
-				password: 'pw',
-				port: 5432
+				host: process.env.DATABASE_HOST,
+				database: process.env.DATABASE_DB,
+				user: process.env.DATABASE_USER,
+				password: process.env.DATABASE_PASSWORD,
+				port: process.env.DATABASE_PORT ? +process.env.DATABASE_PORT : undefined
 			})
 		})
 	});
