@@ -45,7 +45,7 @@ export async function getDraftInvoiceById(
  * @returns An array of draft invoice records.
  */
 export async function getAllDraftInvoices(): Promise<Selectable<DraftInvoice>[]> {
-	return await db.selectFrom('draft_invoice').selectAll().execute();
+	return await db.selectFrom('draft_invoice').orderBy('draft_invoice.uploaded_at desc').selectAll().execute();
 }
 
 /**

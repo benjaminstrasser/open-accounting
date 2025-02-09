@@ -7,10 +7,13 @@ import {
 } from '$lib/server/invoice/repository/invoice-repo';
 import { DraftInvoiceSchema } from '$lib/models/invoice.model';
 
+// TODO some weird ssr bug with drafts:  await getAllDraftInvoices()
+export const ssr = false;
 
 export const load: PageServerLoad = async () => {
 	return {
 		form: await superValidate(zod(DraftInvoiceSchema)),
+		drafts:  await getAllDraftInvoices()
 	};
 };
 

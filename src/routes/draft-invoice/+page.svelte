@@ -3,6 +3,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { Table, TableHeader, TableRow, TableBody, TableCell, TableHead} from '$lib/components/ui/table';
 	import { DraftInvoiceSchema } from '$lib/models/invoice.model';
+	import Time from 'svelte-time';
 
 	const {data} = $props()
 
@@ -35,7 +36,7 @@
 
 <hr class="my-8" />
 
-<!-- Draft Invoices List Table
+ Draft Invoices List Table
 <h2 class="text-2xl font-bold mb-4">Draft Invoices</h2>
 {#if data.drafts && data.drafts.length > 0}
 	<Table class="w-full shadow-md bg-card text-card-foreground border border-border">
@@ -51,11 +52,12 @@
 				<TableRow>
 					<TableCell>{draft.id}</TableCell>
 					<TableCell>{draft.filename}</TableCell>
-					<TableCell>{new Date(draft.uploaded_at).toLocaleString()}</TableCell>
+					<TableCell>					<Time timestamp={draft.uploaded_at} format="DD.MM.YYYY hh:mm" />
+					</TableCell>
 				</TableRow>
 			{/each}
 		</TableBody>
 	</Table>
 {:else}
 	<p>No draft invoices found.</p>
-{/if}-->
+{/if}
