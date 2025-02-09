@@ -9,10 +9,7 @@ import {
 	getInvoiceById,
 	getAllInvoices
 } from './invoice-repo';
-import type { Selectable } from 'kysely';
-import type { DraftInvoice, Invoice } from '$lib/server/database/database-types';
 import { db } from '$lib/server/database/database';
-
 describe('Invoice Repository Tests', () => {
 	beforeEach(async () => {
 		await resetDatabase();
