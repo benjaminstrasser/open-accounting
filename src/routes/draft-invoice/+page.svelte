@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type ChangeEvent, filesProxy, superForm } from 'sveltekit-superforms';
+	import { filesProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import {
 		Table,
