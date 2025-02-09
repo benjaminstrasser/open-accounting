@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Signature Extraction - Robust</title>
+		<script
+			async
+			src="https://docs.opencv.org/4.8.0/opencv.js"
+			onload="onOpenCvReady();"
+			type="text/javascript"
+		></script>
+		<style>
+			#container {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			canvas {
+				border: 1px solid black;
+				margin: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<video id="videoInput" width="640" height="480" autoplay></video>
+			<button id="captureButton">Capture Signature</button>
+			<canvas id="canvasInput" width="640" height="480"></canvas>
+			<canvas id="canvasOutput"></canvas>
+			<a id="downloadLink" style="display: none">Download Signature</a>
+		</div>
+
+		<script>
+			let video, captureButton, canvasInput, canvasOutput, downloadLink;
+			let cap, src;
+			let processing = false;
+
+			function onOpenCvReady() {
+				video = document.getElementById('videoInput');
+				captureButton = document.getElementById('captureButton');
+				canvasInput = document.getElementById('canvasInput');
+				canvasOutput = document.getElementById('canvasOutput');
+				downloadLink = document.getElementById('downloadLink');
+				captureButton.addEventListener('click', captureAndProcess);
+
+				navigator.mediaDevices
+					.getUserMedia({ video: true, audio: false })
+					.then(function (stream) {
+						video.srcObject = stream;
+						video.play();
+						setTimeout(() => {
+							src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+							cap = new cv.VideoCapture(video);
+						}, 1000);
+					})
+					.catch(function (err) {
+						console.error('Error accessing camera:', err);
+					});
+			}
+
+			async function captureAndProcess() {
+				if (processing) return;
+				processing = true;
+				captureButton.disabled = true;
+				captureButton.innerText = 'Processing...';
+
+				cap.read(src);
+				cv.imshow('canvasInput', src); // Show captured frame
+
+				let gray = new cv.Mat();
+				cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+
+				// 1. CLAHE for Contrast (as before, but parameters can be adjusted)
+				let clahe = new cv.CLAHE(2.0, new cv.Size(8, 8));
+				let enhanced = new cv.Mat();
+				clahe.apply(gray, enhanced);
+				clahe.delete();
+
+				// 2. Adaptive Thresholding (tuned for detail preservation)
+				let thresholded = new cv.Mat();
+				cv.adaptiveThreshold(
+					enhanced,
+					thresholded,
+					255,
+					cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+					cv.THRESH_BINARY_INV,
+					25,
+					9
+				); // Adjust these
+
+				// 3. Gentle Morphological Operations (for noise reduction)
+				let kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(2, 2));
+				let opened = new cv.Mat();
+				cv.morphologyEx(thresholded, opened, cv.MORPH_OPEN, kernel); // Gentle open
+				kernel.delete();
+
+				let processed = opened;
+
+				// 4. Contour Detection (RETR_CCOMP for handling inner loops)
+				let contours = new cv.MatVector();
+				let hierarchy = new cv.Mat();
+				cv.findContours(processed, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+
+				// 5. Create a Mask - Iterate through ALL Contours (Handles Multi-Part Signatures)
+				let mask = cv.Mat.zeros(processed.rows, processed.cols, cv.CV_8UC1); // Single channel mask
+				for (let i = 0; i < contours.size(); i++) {
+					let h = hierarchy.intPtr(0, i); // Access hierarchy data
+
+					if (cv.contourArea(contours.get(i)) > 50) {
+						// Minimum area check for all contours
+
+						// Draw external contours in white, filled
+						cv.drawContours(
+							mask,
+							contours,
+							i,
+							[255, 255, 255, 255],
+							cv.FILLED,
+							cv.LINE_8,
+							hierarchy,
+							0
+						); // Draw filled contour
+						// Draw internal contours (holes) in black, filled to remove the interiors
+						if (h[2] != -1) {
+							//if the contour has holes
+							cv.drawContours(
+								mask,
+								contours,
+								h[2],
+								[0, 0, 0, 0],
+								cv.FILLED,
+								cv.LINE_8,
+								hierarchy,
+								0
+							);
+						}
+					}
+				}
+
+				// 6.  Bounding Rectangle for ALL Contours (Handles Multi-Part Signatures + Non-White Backgrounds)
+				let combinedRect = null;
+				for (let i = 0; i < contours.size(); i++) {
+					if (cv.contourArea(contours.get(i)) > 50) {
+						// Consider only significant contours
+						let rect = cv.boundingRect(contours.get(i));
+						if (combinedRect === null) {
+							combinedRect = rect;
+						} else {
+							// Expand combinedRect to include the current rect
+							let x = Math.min(combinedRect.x, rect.x);
+							let y = Math.min(combinedRect.y, rect.y);
+							let right = Math.max(combinedRect.x + combinedRect.width, rect.x + rect.width);
+							let bottom = Math.max(combinedRect.y + combinedRect.height, rect.y + rect.height);
+							combinedRect.x = x;
+							combinedRect.y = y;
+							combinedRect.width = right - x;
+							combinedRect.height = bottom - y;
+						}
+					}
+				}
+
+				// 7. Extract Signature with Transparency
+				let result = new cv.Mat(src.rows, src.cols, cv.CV_8UC4); // 4-channel image (with alpha)
+				result.setTo([0, 0, 0, 0]); // Set it all to transparent
+
+				if (combinedRect) {
+					let finalMask = mask.roi(combinedRect);
+					let src_cropped = src.roi(combinedRect);
+					let result_cropped = result.roi(combinedRect); // region of interest
+					cv.bitwise_and(src_cropped, src_cropped, result_cropped, finalMask); // Apply mask only to the cropped region
+
+					finalMask.delete();
+					src_cropped.delete();
+					result_cropped.delete();
+
+					cv.imshow('canvasOutput', result);
+
+					// Create Download Link
+					let dataURL = canvasOutput.toDataURL('image/png');
+					downloadLink.href = dataURL;
+					downloadLink.download = 'signature.png';
+					downloadLink.style.display = 'block';
+					downloadLink.innerText = 'Download Signature';
+				} else {
+					alert('No signature Found! Try again.');
+				}
+
+				// Memory Cleanup (Essential!)
+				gray.delete();
+				enhanced.delete();
+				thresholded.delete();
+				opened.delete();
+				processed.delete();
+				contours.delete();
+				hierarchy.delete();
+				mask.delete();
+				result.delete();
+
+				processing = false;
+				captureButton.disabled = false;
+				captureButton.innerText = 'Capture Signature';
+			}
+		</script>
+	</body>
+</html>
