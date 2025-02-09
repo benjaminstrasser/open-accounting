@@ -9,19 +9,15 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    env:
-      # Hardcoded testing environment variables
-      DATABASE_USER: user
-      DATABASE_PASSWORD: pw
-      DATABASE_HOST: localhost
-      DATABASE_PORT: 5432
-      DATABASE_DB: postgres
-      DATABASE_URL: postgres://user:pw@localhost:5432/postgres
 
     steps:
       # Check out the repository code
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      # Load env variables from .env.example
+      - name: Load environment variables from .env.example
+        run: grep -v '^#' .env.example | grep -v '^\s*$' >> $GITHUB_ENV
 
       # Set up Bun on the runner
       - name: Setup Bun
