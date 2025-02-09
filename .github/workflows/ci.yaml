@@ -33,7 +33,7 @@ jobs:
 
       # Start the database service via Docker Compose
       - name: Start Database Service
-        run: docker compose up -d
+        run: docker compose up --wait -d
 
       # Run database migrations
       - name: Run Database Migrations
