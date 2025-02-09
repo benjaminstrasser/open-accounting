@@ -29,9 +29,7 @@ export async function createDraftInvoice(
  * @param id - The ID of the draft invoice.
  * @returns The draft invoice record.
  */
-export async function getDraftInvoiceById(
-	id: number
-): Promise<Selectable<DraftInvoice>> {
+export async function getDraftInvoiceById(id: number): Promise<Selectable<DraftInvoice>> {
 	return await db
 		.selectFrom('draft_invoice')
 		.where('id', '=', id)
@@ -45,7 +43,11 @@ export async function getDraftInvoiceById(
  * @returns An array of draft invoice records.
  */
 export async function getAllDraftInvoices(): Promise<Selectable<DraftInvoice>[]> {
-	return await db.selectFrom('draft_invoice').orderBy('draft_invoice.uploaded_at desc').selectAll().execute();
+	return await db
+		.selectFrom('draft_invoice')
+		.orderBy('draft_invoice.uploaded_at desc')
+		.selectAll()
+		.execute();
 }
 
 /**
@@ -111,14 +113,8 @@ export async function processDraftInvoice(
  * @param id - The ID of the invoice.
  * @returns The invoice record.
  */
-export async function getInvoiceById(
-	id: number
-): Promise<Selectable<Invoice>> {
-	return await db
-		.selectFrom('invoice')
-		.where('id', '=', id)
-		.selectAll()
-		.executeTakeFirstOrThrow();
+export async function getInvoiceById(id: number): Promise<Selectable<Invoice>> {
+	return await db.selectFrom('invoice').where('id', '=', id).selectAll().executeTakeFirstOrThrow();
 }
 
 /**

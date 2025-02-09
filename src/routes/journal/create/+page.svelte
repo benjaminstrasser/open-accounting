@@ -76,7 +76,11 @@
 	</div>
 
 	<!-- Form Container -->
-	<form method="POST" use:enhance class="space-y-6 rounded-lg border border-border bg-card p-6 shadow-md text-card-foreground">
+	<form
+		method="POST"
+		use:enhance
+		class="space-y-6 rounded-lg border border-border bg-card p-6 text-card-foreground shadow-md"
+	>
 		<!-- Journal Information -->
 		<div class="grid grid-cols-2 gap-4">
 			<Form.Field {form} name="journal.date">
@@ -95,7 +99,9 @@
 							<CalendarIcon />
 							{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
 						</Popover.Trigger>
-						<Popover.Content class="flex w-auto flex-col space-y-2 p-2 bg-card border border-border text-card-foreground">
+						<Popover.Content
+							class="flex w-auto flex-col space-y-2 border border-border bg-card p-2 text-card-foreground"
+						>
 							<Select.Root
 								type="single"
 								bind:value={
@@ -106,10 +112,10 @@
 									}
 								}
 							>
-								<Select.Trigger class="w-full bg-card text-card-foreground border border-border">
+								<Select.Trigger class="w-full border border-border bg-card text-card-foreground">
 									{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
 								</Select.Trigger>
-								<Select.Content class="bg-card text-card-foreground border border-border">
+								<Select.Content class="border border-border bg-card text-card-foreground">
 									{#each items as item}
 										<Select.Item value={`${item.value}`}>{item.label}</Select.Item>
 									{/each}
@@ -148,11 +154,15 @@
 					<div class="mt-3 flex items-center gap-3">
 						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.account_id`} class="flex-1">
 							<Form.Control>
-								<Select.Root type="single" bind:value={$formData.ledgerEntries[entry.origIndex].account_id}>
-									<Select.Trigger class="w-full bg-card text-card-foreground border border-border">
-										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name || 'Select Account'}
+								<Select.Root
+									type="single"
+									bind:value={$formData.ledgerEntries[entry.origIndex].account_id}
+								>
+									<Select.Trigger class="w-full border border-border bg-card text-card-foreground">
+										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name ||
+											'Select Account'}
 									</Select.Trigger>
-									<Select.Content class="bg-card text-card-foreground border border-border">
+									<Select.Content class="border border-border bg-card text-card-foreground">
 										{#each Object.values(data.accountsMap) as account}
 											<Select.Item value={account.id}>{account.name}</Select.Item>
 										{/each}
@@ -163,7 +173,12 @@
 
 						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.amount`} class="w-32">
 							<Form.Control>
-								<Input type="number" min="0" step="0.01" bind:value={$formData.ledgerEntries[entry.origIndex].amount} />
+								<Input
+									type="number"
+									min="0"
+									step="0.01"
+									bind:value={$formData.ledgerEntries[entry.origIndex].amount}
+								/>
 							</Form.Control>
 						</Form.Field>
 
@@ -202,11 +217,15 @@
 					<div class="mt-3 flex items-center gap-3">
 						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.account_id`} class="flex-1">
 							<Form.Control>
-								<Select.Root type="single" bind:value={$formData.ledgerEntries[entry.origIndex].account_id}>
-									<Select.Trigger class="w-full bg-card text-card-foreground border border-border">
-										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name || 'Select Account'}
+								<Select.Root
+									type="single"
+									bind:value={$formData.ledgerEntries[entry.origIndex].account_id}
+								>
+									<Select.Trigger class="w-full border border-border bg-card text-card-foreground">
+										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name ||
+											'Select Account'}
 									</Select.Trigger>
-									<Select.Content class="bg-card text-card-foreground border border-border">
+									<Select.Content class="border border-border bg-card text-card-foreground">
 										{#each Object.values(data.accountsMap) as account}
 											<Select.Item value={account.id}>{account.name}</Select.Item>
 										{/each}
@@ -217,7 +236,12 @@
 
 						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.amount`} class="w-32">
 							<Form.Control>
-								<Input type="number" min="0" step="0.01" bind:value={$formData.ledgerEntries[entry.origIndex].amount} />
+								<Input
+									type="number"
+									min="0"
+									step="0.01"
+									bind:value={$formData.ledgerEntries[entry.origIndex].amount}
+								/>
 							</Form.Control>
 						</Form.Field>
 
@@ -255,8 +279,6 @@
 		</div>
 
 		<!-- Submit Button -->
-		<Button type="submit" class="mt-6 w-full" disabled={!isBalanced}>
-			Submit Journal Entry
-		</Button>
+		<Button type="submit" class="mt-6 w-full" disabled={!isBalanced}>Submit Journal Entry</Button>
 	</form>
 </div>

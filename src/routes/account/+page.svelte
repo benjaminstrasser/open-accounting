@@ -11,7 +11,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
 	import CirclePlus from 'lucide-svelte/icons/circle-plus';
-	import { Separator } from "$lib/components/ui/separator";
+	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
 	import { toast } from 'svelte-sonner';
 	import { goto, invalidate } from '$app/navigation';
@@ -65,8 +65,8 @@
 		<h2 class=" text-xl font-semibold text-card-foreground">
 			{title}
 		</h2>
-		<Separator class="mb-4"/>
-		<Table class="w-full shadow-md bg-card text-card-foreground border border-border">
+		<Separator class="mb-4" />
+		<Table class="w-full border border-border bg-card text-card-foreground shadow-md">
 			<TableHeader class="bg-muted">
 				<TableRow>
 					<TableHead>Number</TableHead>
@@ -112,7 +112,7 @@
 			<Dialog.Trigger>
 				<Button variant="default">Create Account</Button>
 			</Dialog.Trigger>
-			<Dialog.Content class="bg-card text-card-foreground border border-border shadow-lg p-6">
+			<Dialog.Content class="border border-border bg-card p-6 text-card-foreground shadow-lg">
 				<Dialog.Header class="mb-4">
 					<Dialog.Title class="text-xl font-semibold">Create Account</Dialog.Title>
 					<Dialog.Description class="text-sm text-muted-foreground">
@@ -146,14 +146,14 @@
 							{#snippet children({ props })}
 								<Form.Label class="text-sm text-muted-foreground">Type</Form.Label>
 								<Select.Root type="single" bind:value={$formData.type} name={props.name}>
-									<Select.Trigger class="bg-card text-card-foreground border border-border">
+									<Select.Trigger class="border border-border bg-card text-card-foreground">
 										{#if $formData.type}
-											{accountTypes.find(item => item.value === $formData.type)?.label}
+											{accountTypes.find((item) => item.value === $formData.type)?.label}
 										{:else}
 											Select an account type
 										{/if}
 									</Select.Trigger>
-									<Select.Content class="bg-card text-card-foreground border border-border">
+									<Select.Content class="border border-border bg-card text-card-foreground">
 										{#each accountTypes as accountType}
 											<Select.Item value={accountType.value}>
 												{accountType.label}
@@ -170,14 +170,15 @@
 							{#snippet children({ props })}
 								<Form.Label class="text-sm text-muted-foreground">Normal Balance</Form.Label>
 								<Select.Root type="single" bind:value={$formData.normal_balance} name={props.name}>
-									<Select.Trigger class="bg-card text-card-foreground border border-border">
+									<Select.Trigger class="border border-border bg-card text-card-foreground">
 										{#if $formData.normal_balance}
-											{normalBalances.find(item => item.value === $formData.normal_balance)?.label}
+											{normalBalances.find((item) => item.value === $formData.normal_balance)
+												?.label}
 										{:else}
 											Select credit or debit
 										{/if}
 									</Select.Trigger>
-									<Select.Content class="bg-card text-card-foreground border border-border">
+									<Select.Content class="border border-border bg-card text-card-foreground">
 										{#each normalBalances as balance}
 											<Select.Item value={balance.value}>
 												{balance.label}
@@ -200,7 +201,7 @@
 		{@render accountTable('Debit Accounts', debitAccounts)}
 
 		<!-- Vertical Separator (full height) -->
-		<Separator orientation="vertical"/>
+		<Separator orientation="vertical" />
 		{@render accountTable('Credit Accounts', creditAccounts)}
 	</div>
 </div>

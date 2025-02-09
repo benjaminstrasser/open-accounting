@@ -9,7 +9,7 @@
 		TableRow
 	} from '$lib/components/ui/table';
 	import { Separator } from '$lib/components/ui/separator';
-	import { Button } from "$lib/components/ui/button";
+	import { Button } from '$lib/components/ui/button';
 	import type { PageProps } from './$types';
 	import type { GetJournalEntry } from '$lib/models/ledger.model';
 	import Time from 'svelte-time';
@@ -29,7 +29,7 @@
 
 	<!-- Journal Entries List -->
 	{#each journalEntries as journal}
-		<Card class="border border-border shadow-sm bg-card text-card-foreground">
+		<Card class="border border-border bg-card text-card-foreground shadow-sm">
 			<CardHeader class="bg-muted p-3">
 				<!-- Date formatted as "DD.MM.YYYY" -->
 				<p class="text-sm font-semibold italic text-muted-foreground">
@@ -54,7 +54,8 @@
 										? 'cursor-pointer pl-8 text-sm'
 										: 'cursor-pointer text-sm'}
 								>
-									{accountsMap[entry.account_id].account_number} | {accountsMap[entry.account_id].name}
+									{accountsMap[entry.account_id].account_number} | {accountsMap[entry.account_id]
+										.name}
 								</TableCell>
 								<TableCell class="text-right text-sm font-medium text-green-600">
 									{entry.side === 'debit' ? `${entry.amount} €` : '-'}

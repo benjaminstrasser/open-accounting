@@ -13,7 +13,7 @@ export const ssr = false;
 export const load: PageServerLoad = async () => {
 	return {
 		form: await superValidate(zod(DraftInvoiceSchema)),
-		drafts:  await getAllDraftInvoices()
+		drafts: await getAllDraftInvoices()
 	};
 };
 

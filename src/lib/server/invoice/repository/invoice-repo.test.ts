@@ -7,7 +7,7 @@ import {
 	deleteDraftInvoice,
 	processDraftInvoice,
 	getInvoiceById,
-	getAllInvoices,
+	getAllInvoices
 } from './invoice-repo';
 import type { Selectable } from 'kysely';
 import type { DraftInvoice, Invoice } from '$lib/server/database/database-types';
@@ -84,13 +84,7 @@ describe('Invoice Repository Tests', () => {
 				const invoiceDate = '2023-10-01';
 				const vat = 200; // in cents
 
-				const invoice = await processDraftInvoice(
-					draft.id,
-					supplier,
-					amount,
-					invoiceDate,
-					vat
-				);
+				const invoice = await processDraftInvoice(draft.id, supplier, amount, invoiceDate, vat);
 				expect(invoice).toBeDefined();
 				expect(invoice.id).toBeGreaterThan(0);
 				expect(invoice.filename).toBe(filename);

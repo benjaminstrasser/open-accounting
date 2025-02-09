@@ -7,9 +7,7 @@ export async function up(db: Kysely<never>): Promise<void> {
 		.addColumn('id', 'serial', (col) => col.primaryKey())
 		.addColumn('file_data', 'bytea', (col) => col.notNull())
 		.addColumn('filename', 'varchar', (col) => col.notNull())
-		.addColumn('uploaded_at', 'timestamp', (col) =>
-			col.notNull().defaultTo(sql`now()`)
-		)
+		.addColumn('uploaded_at', 'timestamp', (col) => col.notNull().defaultTo(sql`now()`))
 		.execute();
 
 	// Create the invoice table for finalized invoices.
@@ -26,9 +24,7 @@ export async function up(db: Kysely<never>): Promise<void> {
 		.addColumn('invoice_date', 'date', (col) => col.notNull())
 		// Store VAT in cents as an integer.
 		.addColumn('vat', 'integer', (col) => col.notNull())
-		.addColumn('created_at', 'timestamp', (col) =>
-			col.notNull().defaultTo(sql`now()`)
-		)
+		.addColumn('created_at', 'timestamp', (col) => col.notNull().defaultTo(sql`now()`))
 		.execute();
 }
 

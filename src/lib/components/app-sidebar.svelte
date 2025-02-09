@@ -4,7 +4,7 @@
 	import NotebookPen from 'lucide-svelte/icons/notebook-pen';
 	import ReceiptText from 'lucide-svelte/icons/receipt-text';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import ModeDropdown from "./mode-dropdown.svelte"
+	import ModeDropdown from './mode-dropdown.svelte';
 
 	// Menu items.
 	const items = [
@@ -22,7 +22,8 @@
 			title: 'Accounts',
 			url: '/account',
 			icon: Book
-		},{
+		},
+		{
 			title: 'Invoice',
 			url: '/draft-invoice',
 			icon: ReceiptText

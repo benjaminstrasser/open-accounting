@@ -20,7 +20,7 @@
 
 <div class="container mx-auto space-y-6 p-6">
 	<!-- Account Overview Section -->
-	<Card class="border border-border shadow-lg bg-card text-card-foreground">
+	<Card class="border border-border bg-card text-card-foreground shadow-lg">
 		<CardHeader class="bg-muted p-4">
 			<CardTitle class="text-2xl font-semibold text-muted-foreground">
 				{data.account.name}
@@ -55,7 +55,7 @@
 		<h2 class="mb-4 text-xl font-semibold text-foreground">Ledger Entries</h2>
 
 		{#if ledgerEntries.length > 0}
-			<Table class="w-full border border-border shadow-md bg-card text-card-foreground">
+			<Table class="w-full border border-border bg-card text-card-foreground shadow-md">
 				<TableHeader class="bg-muted">
 					<TableRow>
 						<TableHead>Date</TableHead>
@@ -82,9 +82,7 @@
 				</TableBody>
 			</Table>
 		{:else}
-			<p class="py-6 text-center text-muted-foreground">
-				No ledger entries found.
-			</p>
+			<p class="py-6 text-center text-muted-foreground">No ledger entries found.</p>
 		{/if}
 	</div>
 </div>
