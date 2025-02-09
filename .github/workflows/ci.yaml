@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      # Hardcoded testing environment variables
+      DATABASE_USER: user
+      DATABASE_PASSWORD: pw
+      DATABASE_HOST: localhost
+      DATABASE_PORT: 5432
+      DATABASE_DB: postgres
+      DATABASE_URL: postgres://user:pw@localhost:5432/postgres
+
+    steps:
+      # Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Bun on the runner
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      # Install project dependencies using Bun
+      - name: Install Dependencies
+        run: bun install
+
+      # Start the database service via Docker Compose
+      - name: Start Database Service
+        run: docker compose up -d
+
+      # Run database migrations
+      - name: Run Database Migrations
+        run: bun run database:migrate
+
+      # Generate Kysely types
+      - name: Generate Database Types
+        run: bun run database:types
+
+      # Run unit tests
+      - name: Run Unit Tests
+        run: bun run test:unit
+
+      # Lint the codebase
+      - name: Lint Code
+        run: bun run lint
+
+      # Shut down Docker Compose services (runs even if previous steps fail)
+      - name: Stop Database Service
+        if: always()
+        run: docker compose down
