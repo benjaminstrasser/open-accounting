@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { filesProxy, superForm } from 'sveltekit-superforms';
+	import { type ChangeEvent, filesProxy, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import {
 		Table,
@@ -20,8 +20,7 @@
 
 	const files = filesProxy(form, 'images');
 
-	function submitFiles(e) {
-		console.log(e);
+	function submitFiles(e: Event) {
 		submit(e);
 	}
 </script>

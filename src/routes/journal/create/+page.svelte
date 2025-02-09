@@ -14,6 +14,8 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { Calendar } from '$lib/components/ui/calendar';
 	import { DateFormatter, getLocalTimeZone, today } from '@internationalized/date';
+	import LedgerEntry from './LedgerEntry.svelte';
+	import { type PageData } from './$types';
 
 	const df = new DateFormatter('de-AT', { dateStyle: 'long' });
 	let value = today(getLocalTimeZone());
@@ -24,7 +26,7 @@
 
 	const items = [{ value: 0, label: 'Today' }];
 
-	export let data;
+	export let data: PageData;
 
 	const form = superForm(data.form, {
 		validators: zodClient(CreateJournalWithEntriesSchema),
@@ -56,7 +58,7 @@
 		$formData.ledgerEntries = [
 			...$formData.ledgerEntries,
 			{
-				account_id: null,
+				account_id: null as unknown as number,
 				amount: 0,
 				side
 			}
@@ -152,26 +154,9 @@
 					.map((entry, index) => ({ ...entry, origIndex: index }))
 					.filter((e) => e.side === 'debit') as entry}
 					<div class="mt-3 flex items-center gap-3">
-						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.account_id`} class="flex-1">
-							<Form.Control>
-								<Select.Root
-									type="single"
-									bind:value={$formData.ledgerEntries[entry.origIndex].account_id}
-								>
-									<Select.Trigger class="w-full border border-border bg-card text-card-foreground">
-										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name ||
-											'Select Account'}
-									</Select.Trigger>
-									<Select.Content class="border border-border bg-card text-card-foreground">
-										{#each Object.values(data.accountsMap) as account}
-											<Select.Item value={account.id}>{account.name}</Select.Item>
-										{/each}
-									</Select.Content>
-								</Select.Root>
-							</Form.Control>
-						</Form.Field>
+						<LedgerEntry {form} {entry} {data} {formData} />
 
-						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.amount`} class="w-32">
+						<Form.Field {form} name={`ledgerEntries[${entry.origIndex}].amount`} class="w-32">
 							<Form.Control>
 								<Input
 									type="number"
@@ -215,26 +200,9 @@
 					.map((entry, index) => ({ ...entry, origIndex: index }))
 					.filter((e) => e.side === 'credit') as entry}
 					<div class="mt-3 flex items-center gap-3">
-						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.account_id`} class="flex-1">
-							<Form.Control>
-								<Select.Root
-									type="single"
-									bind:value={$formData.ledgerEntries[entry.origIndex].account_id}
-								>
-									<Select.Trigger class="w-full border border-border bg-card text-card-foreground">
-										{data.accountsMap[$formData.ledgerEntries[entry.origIndex].account_id]?.name ||
-											'Select Account'}
-									</Select.Trigger>
-									<Select.Content class="border border-border bg-card text-card-foreground">
-										{#each Object.values(data.accountsMap) as account}
-											<Select.Item value={account.id}>{account.name}</Select.Item>
-										{/each}
-									</Select.Content>
-								</Select.Root>
-							</Form.Control>
-						</Form.Field>
+						<LedgerEntry {form} {entry} {data} {formData} />
 
-						<Form.Field {form} name={`ledgerEntries.${entry.origIndex}.amount`} class="w-32">
+						<Form.Field {form} name={`ledgerEntries[${entry.origIndex}].amount`} class="w-32">
 							<Form.Control>
 								<Input
 									type="number"

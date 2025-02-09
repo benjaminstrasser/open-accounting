@@ -51,6 +51,10 @@ jobs:
       - name: Lint Code
         run: bun run lint
 
+      # Svelte Check the codebase
+      - name: Lint Code
+        run: bun run svelte-check
+
       # Shut down Docker Compose services (runs even if previous steps fail)
       - name: Stop Database Service
         if: always()
