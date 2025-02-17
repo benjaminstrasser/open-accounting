@@ -1,5 +1,6 @@
 <script lang="ts">
 	import * as pdfjs from 'pdfjs-dist';
+	// eslint-disable-next-line
 	import * as worker from 'pdfjs-dist/build/pdf.worker.mjs';
 	import type { PageProps } from './$types';
 

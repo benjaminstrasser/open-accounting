@@ -1,5 +1,5 @@
 // +page.server.ts
-import { error, type RequestHandler } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getDraftInvoiceById } from '$lib/server/invoice/repository/invoice-repo';
 

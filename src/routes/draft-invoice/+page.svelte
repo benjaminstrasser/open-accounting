@@ -53,7 +53,7 @@ Draft Invoices List Table
 		</TableHeader>
 		<TableBody>
 			{#each data.drafts as draft}
-				<TableRow class='cursor-pointer' onclick={() => goto(`/draft-invoice/${draft.id}`)}>
+				<TableRow class="cursor-pointer" onclick={() => goto(`/draft-invoice/${draft.id}`)}>
 					<TableCell>{draft.filename}</TableCell>
 					<TableCell><Time timestamp={draft.uploaded_at} format="DD.MM.YYYY hh:mm" /></TableCell>
 				</TableRow>
