@@ -9,8 +9,7 @@
 
 <Sidebar.Provider>
 	<AppSidebar />
-	<main class="h-100 w-full overflow-y-auto">
-		<Sidebar.Trigger />
+	<main class="h-full w-full overflow-y-auto">
 		{@render children?.()}
 		<Toaster />
 	</main>

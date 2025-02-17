@@ -11,6 +11,7 @@
 	} from '$lib/components/ui/table';
 	import { DraftInvoiceSchema } from '$lib/models/invoice.model';
 	import Time from 'svelte-time';
+	import { goto } from '$app/navigation';
 
 	const { data } = $props();
 
@@ -46,15 +47,13 @@ Draft Invoices List Table
 	<Table class="w-full border border-border bg-card text-card-foreground shadow-md">
 		<TableHeader class="bg-muted">
 			<TableRow>
-				<TableHead>ID</TableHead>
 				<TableHead>Filename</TableHead>
 				<TableHead>Uploaded At</TableHead>
 			</TableRow>
 		</TableHeader>
 		<TableBody>
 			{#each data.drafts as draft}
-				<TableRow>
-					<TableCell>{draft.id}</TableCell>
+				<TableRow class='cursor-pointer' onclick={() => goto(`/draft-invoice/${draft.id}`)}>
 					<TableCell>{draft.filename}</TableCell>
 					<TableCell><Time timestamp={draft.uploaded_at} format="DD.MM.YYYY hh:mm" /></TableCell>
 				</TableRow>
