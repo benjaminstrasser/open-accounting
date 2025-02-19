@@ -24,8 +24,13 @@
 			icon: Book
 		},
 		{
-			title: 'Invoice',
+			title: 'Draft Invoice',
 			url: '/draft-invoice',
+			icon: ReceiptText
+		},
+		{
+			title: 'Invoice',
+			url: '/invoice',
 			icon: ReceiptText
 		}
 	];

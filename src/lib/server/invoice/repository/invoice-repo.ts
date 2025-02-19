@@ -75,7 +75,7 @@ export async function processDraftInvoice(
 	draftId: number,
 	supplier: string,
 	amount: number,
-	invoiceDate: string,
+	invoiceDate: Date,
 	vat: number
 ): Promise<Selectable<Invoice>> {
 	return await db.transaction().execute(async (trx) => {

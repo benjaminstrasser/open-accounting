@@ -13,7 +13,13 @@ export const ssr = false;
 export const load: PageServerLoad = async () => {
 	return {
 		form: await superValidate(zod(DraftInvoiceSchema)),
-		drafts: await getAllDraftInvoices()
+		drafts: (await getAllDraftInvoices()).map((draft) => {
+			return {
+				id: draft.id,
+				filename: draft.filename,
+				uploaded_at: draft.uploaded_at
+			};
+		})
 	};
 };
 
