@@ -21,6 +21,20 @@ export interface Account {
   type: string;
 }
 
+export interface Company {
+  city: string;
+  contact_email: string | null;
+  contact_phone: string | null;
+  country: string;
+  created_at: Generated<Timestamp>;
+  id: Generated<number>;
+  is_client: boolean | null;
+  name: string;
+  street: string;
+  uid: string;
+  zip_code: string;
+}
+
 export interface DraftInvoice {
   file_data: Buffer;
   filename: string;
@@ -55,6 +69,7 @@ export interface LedgerEntry {
 
 export interface DB {
   account: Account;
+  company: Company;
   draft_invoice: DraftInvoice;
   invoice: Invoice;
   journal_entry: JournalEntry;
