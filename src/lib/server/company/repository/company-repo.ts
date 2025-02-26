@@ -9,3 +9,7 @@ export async function insertCompany(company: Insertable<Company>): Promise<Selec
 export async function getCompanies(isClient: boolean): Promise<Selectable<Company>[]> {
 	return db.selectFrom('company').where('company.is_client', '=', isClient).selectAll().execute();
 }
+
+export async function getCompanyById(id: number): Promise<Selectable<Company> | undefined> {
+	return db.selectFrom('company').where('company.id', '=', id).selectAll().executeTakeFirst();
+}

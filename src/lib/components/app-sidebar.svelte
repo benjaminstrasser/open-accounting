@@ -5,7 +5,7 @@
 	import ReceiptText from 'lucide-svelte/icons/receipt-text';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import ModeDropdown from './mode-dropdown.svelte';
-	import { ReceiptEuro } from 'lucide-svelte';
+	import { Building2Icon, ReceiptEuro } from 'lucide-svelte';
 
 	// Menu items.
 	const items = [
@@ -28,6 +28,11 @@
 			title: 'Invoice',
 			url: '/draft-invoice',
 			icon: ReceiptText
+		},
+		{
+			title: 'Companies',
+			url: '/companies',
+			icon: Building2Icon
 		},
 		{
 			title: 'Billing',
